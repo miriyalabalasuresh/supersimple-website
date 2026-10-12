@@ -6,16 +6,24 @@
   <title>AP PCO CO-OPERATIVE CREDIT SOCIETY</title>
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      body * { visibility: hidden; }
+      #printableArea, #printableArea * { visibility: visible; }
+      #printableArea { position: absolute; left: 0; top: 0; width: 100%; }
+      .no-print { display: none !important; }
+    }
+  </style>
 </head>
 <body class="bg-slate-100 font-sans text-gray-800 min-h-screen flex flex-col">
 
   <!-- STATUTORY HEADER -->
-  <header class="bg-blue-950 text-white p-5 shadow-xl border-b-4 border-yellow-500">
+  <header class="bg-blue-950 text-white p-4 shadow-xl border-b-4 border-yellow-500 no-print">
     <div class="container mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-3">
       <div>
         <h1 class="text-xl md:text-2xl font-extrabold tracking-wider uppercase">AP PCO CO-OPERATIVE CREDIT SOCIETY</h1>
         <p class="text-xs font-semibold text-yellow-400 mt-0.5">Registered under MAC Societies Act 1969 | Regd. No. 99999/1977</p>
-        <p class="text-[11px] text-slate-300">Serving ~3,000+ Members | Member Ledger & Loan Management Portal</p>
+        <p class="text-[11px] text-slate-300">Share Nominal Value: ₹100/- per Share | Remote Multi-User Live Portal</p>
       </div>
 
       <!-- LOGGED-IN USER SESSION STATUS -->
@@ -24,6 +32,7 @@
           <span id="sessionUserName" class="block font-bold text-white"></span>
           <span id="sessionUserRole" class="block text-[10px] text-yellow-300 font-medium"></span>
         </div>
+        <button onclick="openChangePasswordModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-2.5 py-1 rounded text-[11px] font-semibold">Change Password</button>
         <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded transition shadow text-xs">Logout</button>
       </div>
     </div>
@@ -32,87 +41,92 @@
   <!-- ========================================== -->
   <!-- 1. AUTHENTICATION / LOGIN / REGISTER VIEW -->
   <!-- ========================================== -->
-  <section id="view-auth" class="flex-grow flex items-center justify-center p-4">
+  <section id="view-auth" class="flex-grow flex items-center justify-center p-4 no-print">
     <div class="w-full max-w-md bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
       <!-- Auth Switcher Tabs -->
       <div class="flex border-b text-sm font-bold">
         <button onclick="switchAuthTab('login')" id="btn-tab-login" class="w-1/2 py-3 bg-blue-950 text-white border-b-2 border-yellow-400">Login Portal</button>
-        <button onclick="switchAuthTab('register')" id="btn-tab-register" class="w-1/2 py-3 bg-slate-100 text-slate-600 hover:bg-slate-200">New Account Creation</button>
+        <button onclick="switchAuthTab('register')" id="btn-tab-register" class="w-1/2 py-3 bg-slate-100 text-slate-600 hover:bg-slate-200">Member Registration</button>
       </div>
 
       <!-- LOGIN FORM -->
       <div id="auth-login-form" class="p-6 space-y-4">
         <div class="text-center mb-2">
-          <h2 class="text-lg font-extrabold text-blue-950 uppercase">Member / Admin Login</h2>
-          <p class="text-xs text-gray-500">Sign in with your Employee ID and Account Password</p>
+          <h2 class="text-lg font-extrabold text-blue-950 uppercase">User Login Portal</h2>
+          <p class="text-xs text-gray-500">Sign in with Employee ID / Role ID and Password</p>
         </div>
 
         <form onsubmit="handleLogin(event)" class="space-y-3 text-xs">
           <div>
-            <label class="font-bold text-gray-700">Employee ID (Em.Id.) *</label>
-            <input type="text" id="loginEmId" required placeholder="e.g. EMP1001 or ADMIN" class="w-full p-2.5 border rounded mt-1 focus:ring-2 focus:ring-blue-500">
+            <label class="font-bold text-gray-700">User ID / Employee ID (EM.ID.) *</label>
+            <input type="text" id="loginEmId" required placeholder="e.g. EMP1001, ADMIN, or PRESIDENT" class="w-full p-2.5 border rounded mt-1 focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
-            <label class="font-bold text-gray-700">Account Password *</label>
+            <label class="font-bold text-gray-700">Password *</label>
             <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full p-2.5 border rounded mt-1 focus:ring-2 focus:ring-blue-500">
           </div>
           <button type="submit" class="w-full bg-blue-900 hover:bg-blue-950 text-white font-bold py-2.5 rounded shadow text-xs uppercase tracking-wider transition">Sign In</button>
         </form>
 
         <div class="p-3 bg-slate-50 border rounded text-[11px] text-gray-600 space-y-1">
-          <p class="font-bold text-blue-900">Demo Login Credentials:</p>
-          <p>• <b>Admin Login:</b> ID: <code class="bg-gray-200 px-1 font-bold">ADMIN</code> | Password: <code class="bg-gray-200 px-1 font-bold">admin123</code></p>
-          <p>• <b>Member Account:</b> Register via tab above or use created accounts.</p>
+          <p class="font-bold text-blue-900">Default Demo Credentials:</p>
+          <p>• <b>President:</b> ID: <code class="bg-gray-200 px-1 font-bold">PRESIDENT</code> | Pass: <code class="bg-gray-200 px-1 font-bold">pres123</code></p>
+          <p>• <b>Admin:</b> ID: <code class="bg-gray-200 px-1 font-bold">ADMIN</code> | Pass: <code class="bg-gray-200 px-1 font-bold">admin123</code></p>
+          <p>• <b>Members:</b> Register via tab above or sign in with registered Employee ID.</p>
         </div>
       </div>
 
-      <!-- MEMBER ACCOUNT CREATION FORM -->
+      <!-- MEMBER ACCOUNT REGISTRATION FORM -->
       <div id="auth-register-form" class="p-6 space-y-3 hidden text-xs">
         <div class="text-center mb-1">
-          <h2 class="text-base font-extrabold text-blue-950 uppercase">Member Account Setup</h2>
-          <p class="text-[11px] text-gray-500">Create your Web Portal account with Society credentials</p>
+          <h2 class="text-base font-extrabold text-blue-950 uppercase">New Member Registration</h2>
+          <p class="text-[11px] text-gray-500">Share Value: ₹100/- per Share</p>
         </div>
 
         <form onsubmit="handleRegister(event)" class="space-y-2.5">
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <label class="font-bold text-gray-700">Membership No (M.No.) *</label>
+              <label class="font-bold text-gray-700">M.NO. *</label>
               <input type="number" id="regMNo" required placeholder="e.g. 1001" class="w-full p-2 border rounded mt-0.5">
             </div>
             <div>
-              <label class="font-bold text-gray-700">Employee ID (Em.Id.) *</label>
+              <label class="font-bold text-gray-700">EM.ID. *</label>
               <input type="text" id="regEmId" required placeholder="e.g. EMP889" class="w-full p-2 border rounded mt-0.5">
             </div>
           </div>
           <div>
             <label class="font-bold text-gray-700">Full Name *</label>
-            <input type="text" id="regName" required placeholder="e.g. K. Venkata Rao" class="w-full p-2 border rounded mt-0.5">
+            <input type="text" id="regName" required placeholder="Full Name" class="w-full p-2 border rounded mt-0.5">
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <label class="font-bold text-gray-700">Opening Shares Qty *</label>
-              <input type="number" id="regOpShares" value="100" min="1" required class="w-full p-2 border rounded mt-0.5">
+              <label class="font-bold text-gray-700">Shares Qty (₹100/share) *</label>
+              <input type="number" id="regOpShares" value="50" min="1" required class="w-full p-2 border rounded mt-0.5">
             </div>
             <div>
               <label class="font-bold text-gray-700">Opening Thrift (₹) *</label>
               <input type="number" id="regOpThrift" value="5000" min="0" required class="w-full p-2 border rounded mt-0.5">
             </div>
           </div>
-          <div class="grid grid-cols-2 gap-2 border-t pt-2">
+          <div class="grid grid-cols-3 gap-2 border-t pt-2">
             <div>
               <label class="font-bold text-gray-700">Bank Name</label>
               <input type="text" id="regBank" placeholder="e.g. SBI" class="w-full p-2 border rounded mt-0.5">
             </div>
             <div>
-              <label class="font-bold text-gray-700">Ac.No / IFSC</label>
+              <label class="font-bold text-gray-700">Ac.No</label>
               <input type="text" id="regAcNo" placeholder="Account No" class="w-full p-2 border rounded mt-0.5">
+            </div>
+            <div>
+              <label class="font-bold text-gray-700">IFSCode</label>
+              <input type="text" id="regIfsc" placeholder="SBIN0001234" class="w-full p-2 border rounded mt-0.5">
             </div>
           </div>
           <div>
-            <label class="font-bold text-gray-700">Create Web Portal Password *</label>
+            <label class="font-bold text-gray-700">Create Password *</label>
             <input type="password" id="regPassword" required placeholder="Minimum 6 characters" class="w-full p-2 border rounded mt-0.5">
           </div>
-          <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded shadow text-xs uppercase tracking-wider transition">Create Account</button>
+          <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded shadow text-xs uppercase tracking-wider transition">Register Account</button>
         </form>
       </div>
     </div>
@@ -121,7 +135,7 @@
   <!-- ========================================== -->
   <!-- 2. MEMBER PORTAL VIEW (SELF-SERVICE)      -->
   <!-- ========================================== -->
-  <section id="view-member-portal" class="hidden flex-grow container mx-auto p-4 md:p-6 space-y-6">
+  <section id="view-member-portal" class="hidden flex-grow container mx-auto p-4 md:p-6 space-y-6 no-print">
     
     <!-- Member Summary Banner -->
     <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white p-5 rounded-xl shadow-lg border-l-4 border-yellow-400 flex flex-wrap justify-between items-center gap-4">
@@ -131,86 +145,93 @@
       </div>
       <div class="flex gap-3 text-xs">
         <div class="bg-white/10 px-4 py-2 rounded border border-white/20 text-center">
-          <span class="block text-blue-200">Share Capital</span>
+          <span class="block text-blue-200">Share Capital (₹100/share)</span>
           <span id="memPortalSharesVal" class="text-base font-extrabold text-yellow-300">₹ 0</span>
         </div>
         <div class="bg-white/10 px-4 py-2 rounded border border-white/20 text-center">
           <span class="block text-blue-200">Thrift Saving Balance</span>
           <span id="memPortalThriftVal" class="text-base font-extrabold text-emerald-300">₹ 0</span>
         </div>
+        <div class="bg-white/10 px-4 py-2 rounded border border-white/20 text-center">
+          <span class="block text-blue-200">Grand Total Balance</span>
+          <span id="memPortalGrandTotalVal" class="text-base font-extrabold text-amber-300">₹ 0</span>
+        </div>
       </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
-      <!-- Apply for Loan Form with PDF Upload -->
+      <!-- Apply / Edit Loan Application Form -->
       <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200 space-y-4">
-        <h3 class="text-base font-bold text-blue-950 border-b pb-2">Apply for Member Loan</h3>
-        <p class="text-xs text-gray-500">Submit loan request and upload your signed application PDF document.</p>
+        <div class="flex justify-between items-center border-b pb-2">
+          <h3 id="loanFormTitle" class="text-base font-bold text-blue-950">Apply for Member Loan</h3>
+          <button id="btnCancelEditLoan" onclick="cancelEditLoan()" class="hidden text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded">Cancel Edit</button>
+        </div>
 
         <form id="memLoanApplyForm" onsubmit="submitMemberLoanApplication(event)" class="space-y-3 text-xs">
+          <input type="hidden" id="editingAppId" value="">
+          
           <div>
-            <label class="font-bold text-gray-700">Date Applied (DA) *</label>
+            <label class="font-bold text-gray-700">Date Applied (DATE) *</label>
             <input type="date" id="memAppDA" required class="w-full p-2 border rounded mt-1 bg-gray-50">
           </div>
           <div>
-            <label class="font-bold text-gray-700">Loan Amount Slab (L.A) *</label>
-            <select id="memAppLA" required onchange="calculateMemEMIPreview()" class="w-full p-2 border rounded mt-1 font-bold text-blue-900">
-              <option value="300000">Rs. 3,00,000/-</option>
-              <option value="400000">Rs. 4,00,000/-</option>
-              <option value="500000">Rs. 5,00,000/-</option>
-              <option value="750000">Rs. 7,50,000/-</option>
+            <label class="font-bold text-gray-700">Purpose of Loan *</label>
+            <select id="memAppPurpose" required class="w-full p-2 border rounded mt-1">
+              <option value="Self Personal">Option - Self Personal</option>
+              <option value="Marriage in Family">Option - Marriage in Family</option>
+              <option value="Purchase House hold">Option - Purchase House hold</option>
             </select>
           </div>
           <div>
-            <label class="font-bold text-gray-700">EMIs Tenure (Months) *</label>
-            <select id="memAppTenure" required onchange="calculateMemEMIPreview()" class="w-full p-2 border rounded mt-1 font-semibold">
-              <option value="10">10 Months</option>
-              <option value="20">20 Months</option>
-              <option value="30">30 Months</option>
-              <option value="40">40 Months</option>
-              <option value="50">50 Months</option>
-              <option value="60" selected>60 Months</option>
+            <label class="font-bold text-gray-700">Priority Level *</label>
+            <select id="memAppPriority" required class="w-full p-2 border rounded mt-1">
+              <option value="Normal">Normal</option>
+              <option value="Priority">Priority</option>
             </select>
           </div>
           <div>
-            <label class="font-bold text-gray-700">Rate of Interest (ROI)</label>
-            <input type="text" value="9.5% P.A." readonly class="w-full p-2 border bg-gray-100 text-gray-600 rounded mt-1 font-semibold">
+            <label class="font-bold text-gray-700">Loan Amount Required (₹) *</label>
+            <input type="number" id="memAppLA" min="1000" step="1000" placeholder="e.g. 200000" required oninput="calculateMemEMIPreview()" class="w-full p-2 border rounded mt-1 font-bold text-blue-900">
+          </div>
+          <div>
+            <label class="font-bold text-gray-700">EMI Tenure (Total EMIs Months) *</label>
+            <input type="number" id="memAppTenure" min="1" max="120" placeholder="e.g. 36" required oninput="calculateMemEMIPreview()" class="w-full p-2 border rounded mt-1 font-semibold">
           </div>
 
-          <!-- PDF DOCUMENT UPLOAD FIELD -->
+          <!-- PDF UPLOAD FIELD -->
           <div class="border-t pt-2">
-            <label class="font-bold text-gray-700">Upload Application PDF File *</label>
-            <input type="file" id="memAppPdf" accept="application/pdf" required class="w-full p-1.5 border rounded mt-1 bg-gray-50 text-xs">
-            <p class="text-[10px] text-gray-400 mt-0.5">Please upload your signed PDF form or payslip.</p>
+            <label class="font-bold text-gray-700">Upload Loan Application PDF Document *</label>
+            <input type="file" id="memAppPdf" accept="application/pdf" class="w-full p-1.5 border rounded mt-1 bg-gray-50 text-xs">
+            <p class="text-[10px] text-gray-400 mt-0.5">Accepted format: PDF. Required for new applications.</p>
           </div>
 
           <div class="bg-yellow-50 border border-yellow-300 p-2.5 rounded text-xs text-yellow-900">
-            <span class="font-bold">Calculated Monthly Loan EMI:</span>
+            <span class="font-bold">Calculated Monthly EMI (at 9.5% P.A.):</span>
             <div id="memEmiPreview" class="text-base font-extrabold text-blue-900 mt-0.5">₹ 0 / month</div>
           </div>
 
-          <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded text-xs shadow">Submit Application & PDF</button>
+          <button type="submit" id="btnSubmitLoan" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded text-xs shadow">Submit Loan Application</button>
         </form>
       </div>
 
-      <!-- Member Active Loans & Personal Ledger Log -->
+      <!-- Member Active Loans & Personal Account Ledger -->
       <div class="lg:col-span-2 space-y-6">
         
-        <!-- Active Loan Status -->
+        <!-- My Loan Application & Status Table -->
         <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200">
           <h3 class="text-base font-bold text-blue-950 border-b pb-2 mb-3">My Loan Applications & Status</h3>
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse">
+            <table class="w-full text-left text-xs border-collapse border">
               <thead>
                 <tr class="bg-slate-100 text-slate-700 uppercase border-b">
-                  <th class="p-2">DA</th>
-                  <th class="p-2">Loan Amount</th>
-                  <th class="p-2">Tenure</th>
-                  <th class="p-2">Monthly EMI</th>
-                  <th class="p-2">Document PDF</th>
-                  <th class="p-2">Status</th>
-                  <th class="p-2">Balance</th>
+                  <th class="p-2 border">DATE</th>
+                  <th class="p-2 border">LOAN AMOUNT</th>
+                  <th class="p-2 border">PURPOSE / PRIORITY</th>
+                  <th class="p-2 border">EMIs</th>
+                  <th class="p-2 border">DOCUMENT</th>
+                  <th class="p-2 border">STATUS</th>
+                  <th class="p-2 border">ACTIONS</th>
                 </tr>
               </thead>
               <tbody id="memMyLoansTable">
@@ -220,17 +241,17 @@
           </div>
         </div>
 
-        <!-- Personal Ledger Transactions -->
+        <!-- My Personal Account Ledger Log Table -->
         <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200">
           <h3 class="text-base font-bold text-blue-950 border-b pb-2 mb-3">My Personal Account Ledger Log</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse border">
               <thead>
                 <tr class="bg-slate-800 text-white uppercase">
-                  <th class="p-2 border">Date</th>
-                  <th class="p-2 border">Description</th>
-                  <th class="p-2 border">Debit (₹)</th>
-                  <th class="p-2 border">Credit (₹)</th>
+                  <th class="p-2 border">DATE</th>
+                  <th class="p-2 border">PARTICULARS</th>
+                  <th class="p-2 border">DEBIT</th>
+                  <th class="p-2 border">CREDIT</th>
                 </tr>
               </thead>
               <tbody id="memMyLedgerTable">
@@ -246,40 +267,47 @@
   </section>
 
   <!-- ========================================== -->
-  <!-- 3. ADMIN DASHBOARD VIEW                    -->
+  <!-- 3. ADMIN & PRESIDENT DASHBOARD VIEW       -->
   <!-- ========================================== -->
-  <section id="view-admin-dashboard" class="hidden flex-grow flex flex-col">
-    <!-- ADMIN NAVIGATION TABS -->
+  <section id="view-admin-dashboard" class="hidden flex-grow flex flex-col no-print">
+    <!-- BUTTON MENUS 1 - 7 -->
     <nav class="bg-blue-900 text-white shadow-md sticky top-0 z-40">
-      <div class="container mx-auto flex flex-wrap justify-center text-xs md:text-sm font-semibold">
-        <button onclick="switchAdminTab('tab-admin-members')" id="btn-adm-members" class="adm-tab-btn px-4 py-3 border-b-4 border-yellow-400 bg-blue-950">1. Member Master</button>
-        <button onclick="switchAdminTab('tab-admin-postings')" id="btn-adm-postings" class="adm-tab-btn px-4 py-3 hover:bg-blue-800">2. Monthly Postings</button>
-        <button onclick="switchAdminTab('tab-admin-applications')" id="btn-adm-applications" class="adm-tab-btn px-4 py-3 hover:bg-blue-800">3. List of Loan Applications</button>
-        <button onclick="switchAdminTab('tab-admin-sanctioned')" id="btn-adm-sanctioned" class="adm-tab-btn px-4 py-3 hover:bg-blue-800">4. Sanctioned List & EMIs</button>
-        <button onclick="switchAdminTab('tab-admin-ledger')" id="btn-adm-ledger" class="adm-tab-btn px-4 py-3 hover:bg-blue-800">5. Member Ledger</button>
-        <button onclick="switchAdminTab('tab-admin-dividend')" id="btn-adm-dividend" class="adm-tab-btn px-4 py-3 hover:bg-blue-800">6. Dividend & CA Audit</button>
+      <div class="container mx-auto flex flex-wrap justify-center text-xs md:text-xs font-semibold">
+        <button onclick="switchAdminTab('tab-admin-members')" id="btn-adm-members" class="adm-tab-btn px-3 py-3 border-b-4 border-yellow-400 bg-blue-950">1. Members Master</button>
+        <button onclick="switchAdminTab('tab-admin-postings')" id="btn-adm-postings" class="adm-tab-btn px-3 py-3 hover:bg-blue-800">2. Monthly / Annual Posting</button>
+        <button onclick="switchAdminTab('tab-admin-applications')" id="btn-adm-applications" class="adm-tab-btn px-3 py-3 hover:bg-blue-800">3. List of Loan Applicants</button>
+        <button onclick="switchAdminTab('tab-admin-sanctioned')" id="btn-adm-sanctioned" class="adm-tab-btn px-3 py-3 hover:bg-blue-800">4. Sanctioned List & EMIs</button>
+        <button onclick="switchAdminTab('tab-admin-ledger')" id="btn-adm-ledger" class="adm-tab-btn px-3 py-3 hover:bg-blue-800">5. Member Ledger</button>
+        <button onclick="switchAdminTab('tab-admin-misc')" id="btn-adm-misc" class="adm-tab-btn px-3 py-3 hover:bg-blue-800">6. Miscellaneous</button>
+        <button onclick="switchAdminTab('tab-admin-dividend')" id="btn-adm-dividend" class="adm-tab-btn px-3 py-3 hover:bg-blue-800">7. Dividend & CA Audit</button>
       </div>
     </nav>
 
-    <!-- ADMIN CONTENT PANELS -->
+    <!-- ADMIN / PRESIDENT CONTENT PANELS -->
     <main class="container mx-auto p-4 md:p-6 flex-grow">
 
-      <!-- TAB 1: MEMBER MASTER -->
+      <!-- MENU 1: MEMBERS MASTER -->
       <section id="tab-admin-members" class="adm-tab-page space-y-6">
         <div class="bg-white p-5 rounded-lg shadow-md border border-slate-200 overflow-x-auto">
           <div class="flex justify-between items-center mb-3 border-b pb-2">
-            <h2 class="text-base font-bold text-blue-900">Registered Members Master Directory</h2>
+            <div>
+              <h2 class="text-base font-bold text-blue-900">Members Master Directory</h2>
+              <p class="text-xs text-gray-500">Each Share Value = ₹100/- | Grand Total = Share Amount + Thrift Saving</p>
+            </div>
             <span id="totalMembersBadge" class="bg-blue-100 text-blue-900 font-bold text-xs px-3 py-1 rounded-full">Members: 0</span>
           </div>
-          <table class="w-full text-left text-xs border-collapse">
+          <table class="w-full text-left text-xs border-collapse border">
             <thead>
-              <tr class="bg-slate-100 text-slate-700 uppercase border-b">
-                <th class="p-2">M.No.</th>
-                <th class="p-2">Em.Id.</th>
-                <th class="p-2">Name</th>
-                <th class="p-2">Shares Qty</th>
-                <th class="p-2">Thrift Saving</th>
-                <th class="p-2">Bank Details</th>
+              <tr class="bg-slate-100 text-slate-800 uppercase border-b">
+                <th class="p-2 border">M.NO.</th>
+                <th class="p-2 border">EM.ID.</th>
+                <th class="p-2 border">NAME</th>
+                <th class="p-2 border">SHARES QTY</th>
+                <th class="p-2 border">SHARE AMOUNT (₹)</th>
+                <th class="p-2 border">THRIFT SAVING (₹)</th>
+                <th class="p-2 border text-blue-950">GRAND TOTAL (₹)</th>
+                <th class="p-2 border">BANK DETAILS</th>
+                <th class="p-2 border text-center">MANAGE USER</th>
               </tr>
             </thead>
             <tbody id="adminMembersTable">
@@ -289,47 +317,68 @@
         </div>
       </section>
 
-      <!-- TAB 2: MONTHLY POSTINGS -->
+      <!-- MENU 2: MONTHLY / ANNUAL POSTING -->
       <section id="tab-admin-postings" class="adm-tab-page hidden space-y-6">
         <div class="bg-white p-5 rounded-lg shadow-md border border-slate-200">
-          <h2 class="text-base font-bold text-blue-900 mb-2 border-b pb-2">Post Monthly Thrift Subscription & Share Top-ups</h2>
-          <form onsubmit="processMonthlyPosting(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs bg-slate-50 p-4 rounded border mb-4">
+          <div class="flex justify-between items-center border-b pb-2 mb-3">
+            <h2 class="text-base font-bold text-blue-900">Monthly / Annual Postings & Recoveries</h2>
+            <span id="postingAuthBadge" class="text-xs font-bold px-2.5 py-1 rounded bg-yellow-100 text-yellow-800 border border-yellow-300">President Authorization Required for Admin</span>
+          </div>
+          
+          <form onsubmit="processPosting(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs bg-slate-50 p-4 rounded border mb-4">
             <div>
-              <label class="font-bold text-gray-700">Posting Date *</label>
-              <input type="date" id="postingDate" required class="w-full p-2 border rounded mt-1">
+              <label class="font-bold text-gray-700">Posting Date (DATE) *</label>
+              <input type="date" id="postDate" required class="w-full p-2 border rounded mt-1">
             </div>
             <div>
-              <label class="font-bold text-gray-700">Thrift Sub. per Member (₹)</label>
-              <input type="number" id="monthlyThrift" value="1000" min="0" class="w-full p-2 border rounded mt-1">
+              <label class="font-bold text-gray-700">Select Member (EM.ID. - NAME) *</label>
+              <select id="postEmId" required class="w-full p-2 border rounded mt-1 font-bold text-blue-900">
+                <!-- Dynamically populated -->
+              </select>
             </div>
             <div>
-              <label class="font-bold text-gray-700">Add Share Qty (per Member)</label>
-              <input type="number" id="monthlyShareQty" value="10" min="0" class="w-full p-2 border rounded mt-1">
+              <label class="font-bold text-gray-700">Shares Quantity (S.Qty.)</label>
+              <input type="number" id="postSharesQty" value="10" min="0" oninput="updatePostShareAmt()" class="w-full p-2 border rounded mt-1">
             </div>
-            <div class="flex items-end">
-              <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 rounded text-xs shadow">Execute Bulk Posting</button>
+            <div>
+              <label class="font-bold text-gray-700">Share Amount (₹100 x S.Qty)</label>
+              <input type="number" id="postShareAmt" value="1000" readonly class="w-full p-2 border rounded mt-1 bg-gray-100 font-bold">
+            </div>
+            <div>
+              <label class="font-bold text-gray-700">Thrift Saving Amount (₹)</label>
+              <input type="number" id="postThriftAmt" value="1000" min="0" class="w-full p-2 border rounded mt-1">
+            </div>
+            <div>
+              <label class="font-bold text-gray-700">EMI Amount (₹)</label>
+              <input type="number" id="postEmiAmt" min="0" value="0" class="w-full p-2 border rounded mt-1">
+            </div>
+            <div class="md:col-span-2 flex items-end">
+              <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 rounded text-xs shadow uppercase tracking-wider">Execute Posting</button>
             </div>
           </form>
         </div>
       </section>
 
-      <!-- TAB 3: LIST OF LOAN APPLICATIONS & PDF DOWNLOADS -->
+      <!-- MENU 3: LIST OF LOAN APPLICANTS -->
       <section id="tab-admin-applications" class="adm-tab-page hidden space-y-6">
         <div class="bg-white p-5 rounded-lg shadow-md border border-slate-200 overflow-x-auto">
           <div class="text-center border-b pb-3 mb-4">
-            <h2 class="text-lg font-bold text-blue-950 uppercase tracking-wide">List of Loan Applications</h2>
-            <p class="text-xs text-gray-500">AP PCO CO-OPERATIVE CREDIT SOCIETY | Review Applicants & Uploaded PDFs</p>
+            <h2 class="text-lg font-bold text-blue-950 uppercase tracking-wide">List of Loan Applicants</h2>
+            <p class="text-xs text-gray-500">AP PCO CO-OPERATIVE CREDIT SOCIETY</p>
           </div>
-          <table class="w-full text-left text-xs border-collapse">
+          <table class="w-full text-left text-xs border-collapse border">
             <thead>
               <tr class="bg-slate-100 text-slate-800 uppercase border-b">
-                <th class="p-2">DA</th>
-                <th class="p-2">M.No.</th>
-                <th class="p-2">Name</th>
-                <th class="p-2">Em.No.</th>
-                <th class="p-2">Loan Amount (L.A)</th>
-                <th class="p-2">Uploaded PDF Document</th>
-                <th class="p-2 text-center">Action</th>
+                <th class="p-2 border">DATE</th>
+                <th class="p-2 border">M.NO.</th>
+                <th class="p-2 border">EM.ID.</th>
+                <th class="p-2 border">NAME</th>
+                <th class="p-2 border">LOAN AMOUNT</th>
+                <th class="p-2 border">TOTAL EMIs</th>
+                <th class="p-2 border">PURPOSE OF LOAN</th>
+                <th class="p-2 border">UPLOADED PDF</th>
+                <th class="p-2 border">PRIORITY</th>
+                <th class="p-2 border text-center">ACTION</th>
               </tr>
             </thead>
             <tbody id="adminLoanAppsTable">
@@ -339,24 +388,26 @@
         </div>
       </section>
 
-      <!-- TAB 4: SANCTIONED LIST OF LOAN APPLICANTS -->
+      <!-- MENU 4: SANCTIONED LIST & EMIs -->
       <section id="tab-admin-sanctioned" class="adm-tab-page hidden space-y-6">
         <div class="bg-white p-5 rounded-lg shadow-md border border-slate-200 overflow-x-auto">
-          <div class="text-center border-b pb-3 mb-4">
-            <h2 class="text-xl font-extrabold text-blue-950 uppercase tracking-wider">Sanctioned List of Loan Applicants</h2>
+          <div class="flex justify-between items-center border-b pb-3 mb-4">
+            <h2 class="text-lg font-bold text-blue-950 uppercase">Sanctioned List & EMIs</h2>
+            <button onclick="preparePrintableSanctionedList()" class="bg-blue-900 hover:bg-blue-950 text-white font-bold text-xs px-3 py-1.5 rounded">🖨 Print A4 Sanctioned List</button>
           </div>
           <table class="w-full text-left text-xs border-collapse border border-slate-200">
             <thead>
               <tr class="bg-blue-900 text-white uppercase text-center border-b">
-                <th class="p-2 border">DA</th>
-                <th class="p-2 border">M.No.</th>
-                <th class="p-2 border">Name</th>
-                <th class="p-2 border">Em.No.</th>
-                <th class="p-2 border">Loan Amount</th>
-                <th class="p-2 border">Bank / Ac.No / IFSC</th>
-                <th class="p-2 border">Monthly EMI</th>
-                <th class="p-2 border">Remaining Principal</th>
-                <th class="p-2 border">Action</th>
+                <th class="p-2 border">DATE</th>
+                <th class="p-2 border">M.NO.</th>
+                <th class="p-2 border">EM.ID. - NAME</th>
+                <th class="p-2 border">LOAN AMOUNT</th>
+                <th class="p-2 border">BANK NAME</th>
+                <th class="p-2 border">AC.NO.</th>
+                <th class="p-2 border">IFSCode</th>
+                <th class="p-2 border">MONTHLY EMI</th>
+                <th class="p-2 border">PRINCIPLE LOAN OUTSTANDING</th>
+                <th class="p-2 border">ACTION</th>
               </tr>
             </thead>
             <tbody id="adminSanctionedTable" class="text-center">
@@ -366,19 +417,20 @@
         </div>
       </section>
 
-      <!-- TAB 5: GENERAL LEDGER -->
+      <!-- MENU 5: MEMBER LEDGER -->
       <section id="tab-admin-ledger" class="adm-tab-page hidden space-y-6">
         <div class="bg-white p-5 rounded-lg shadow-md border border-slate-200 overflow-x-auto">
-          <h2 class="text-base font-bold text-blue-900 mb-3 border-b pb-2">Society Master General Ledger Logs</h2>
+          <h2 class="text-base font-bold text-blue-900 mb-3 border-b pb-2">Member Master General Ledger Logs</h2>
           <table class="w-full text-left text-xs border-collapse border">
             <thead>
               <tr class="bg-slate-800 text-white uppercase">
-                <th class="p-2 border">Date</th>
-                <th class="p-2 border">M.No.</th>
-                <th class="p-2 border">Name</th>
-                <th class="p-2 border">Particulars</th>
-                <th class="p-2 border">Debit (₹)</th>
-                <th class="p-2 border">Credit (₹)</th>
+                <th class="p-2 border">DATE</th>
+                <th class="p-2 border">M.NO.</th>
+                <th class="p-2 border">EM.ID. - NAME</th>
+                <th class="p-2 border">PARTICULARS</th>
+                <th class="p-2 border">DEBIT (₹)</th>
+                <th class="p-2 border">CREDIT (₹)</th>
+                <th id="ledgerEditHeader" class="p-2 border text-center">ACTION</th>
               </tr>
             </thead>
             <tbody id="adminLedgerTable">
@@ -388,28 +440,85 @@
         </div>
       </section>
 
-      <!-- TAB 6: DIVIDEND & CA AUDIT -->
+      <!-- MENU 6: MISCELLANEOUS -->
+      <section id="tab-admin-misc" class="adm-tab-page hidden space-y-6">
+        <div class="bg-white p-5 rounded-lg shadow-md border border-slate-200 space-y-4">
+          <h2 class="text-base font-bold text-blue-900 border-b pb-2">Miscellaneous Custom Tools & Logs</h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <!-- Custom Printable Reports -->
+            <div class="p-4 bg-slate-50 border rounded space-y-3">
+              <h3 class="font-bold text-blue-950">Custom Documents & Print Templates</h3>
+              <div class="space-y-2">
+                <button onclick="preparePrintableSanctionedList()" class="w-full bg-blue-900 hover:bg-blue-950 text-white font-bold py-2 rounded text-left px-3">🖨 Print "Loan Sanctioned List" (A4 Format)</button>
+                <button onclick="preparePrintableMasterList()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded text-left px-3">🖨 Print "Members Master Data with Grand Totals"</button>
+              </div>
+            </div>
+
+            <!-- Ledger Adjustment Entries -->
+            <div class="p-4 bg-slate-50 border rounded space-y-3">
+              <h3 class="font-bold text-blue-950">Ledger Adjustment Entries for Approval</h3>
+              <form onsubmit="handleMiscLedgerEntry(event)" class="space-y-2">
+                <div>
+                  <label class="font-bold">M.NO. *</label>
+                  <input type="number" id="miscMNo" required class="w-full p-2 border rounded">
+                </div>
+                <div>
+                  <label class="font-bold">Custom Note / Particulars *</label>
+                  <input type="text" id="miscDesc" required placeholder="Custom Note Documents for Entries" class="w-full p-2 border rounded">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="font-bold">Debit Amount (₹)</label>
+                    <input type="number" id="miscDebit" min="0" value="0" class="w-full p-2 border rounded">
+                  </div>
+                  <div>
+                    <label class="font-bold">Credit Amount (₹)</label>
+                    <input type="number" id="miscCredit" min="0" value="0" class="w-full p-2 border rounded">
+                  </div>
+                </div>
+                <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded">Post Adjustment Entry</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- PRESIDENT EXCLUSIVE: MASTER DATA LOG FILE VIEW -->
+          <div id="presidentMasterLogContainer" class="p-4 bg-yellow-50 border border-yellow-300 rounded space-y-2">
+            <h3 class="font-bold text-yellow-950 uppercase">MAIN FILE: MASTER DATA LOG FILE (President Access Only)</h3>
+            <p class="text-gray-600 text-[11px]">Audit log of all profile and balance changes made to Members Master Data.</p>
+            <div class="max-h-48 overflow-y-auto bg-white border p-2 rounded text-[11px] font-mono" id="masterDataLogFileView">
+              <!-- Dynamically populated log entries -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MENU 7: DIVIDEND & CA AUDIT -->
       <section id="tab-admin-dividend" class="adm-tab-page hidden space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div class="bg-white p-5 rounded-lg shadow-md border border-slate-200">
             <h2 class="text-base font-bold text-blue-900 border-b pb-2 mb-3">Annual Dividend Declaration</h2>
             <form onsubmit="processDividendPosting(event)" class="space-y-3 text-xs">
               <div>
-                <label class="font-bold text-gray-700">Posting Date *</label>
+                <label class="font-bold text-gray-700">Posting Date (DATE) *</label>
                 <input type="date" id="divPostingDate" required class="w-full p-2 border rounded mt-1">
               </div>
               <div>
                 <label class="font-bold text-gray-700">CA Advised Share Dividend Rate (% P.A.) *</label>
-                <input type="number" step="0.01" id="shareDivRate" value="6.5" required class="w-full p-2 border rounded mt-1 font-bold text-blue-900">
+                <input type="number" step="0.01" id="shareDivRate" value="6.50" required class="w-full p-2 border rounded mt-1 font-bold text-blue-900">
               </div>
-              <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded text-sm shadow">Post Annual Dividend to Ledger</button>
+              <div>
+                <label class="font-bold text-gray-700">CA Advised Thrift Dividend Rate (% P.A.) *</label>
+                <input type="number" step="0.01" id="thriftDivRate" value="4.50" required class="w-full p-2 border rounded mt-1 font-bold text-emerald-900">
+              </div>
+              <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded text-xs shadow uppercase tracking-wider">Post Annual Dividend to Ledger</button>
             </form>
           </div>
 
           <div class="bg-white p-5 rounded-lg shadow-md border border-slate-200">
             <h2 class="text-base font-bold text-blue-900 border-b pb-2 mb-3">CA Audit Export</h2>
-            <p class="text-xs text-gray-600 mb-4">Export society financial data into CSV format for final Balance Sheet auditing.</p>
-            <button onclick="exportToCSV()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs px-4 py-2 rounded shadow">Export Audit CSV for CA</button>
+            <p class="text-xs text-gray-600 mb-4">Export comprehensive society financial data into CSV format for Chartered Accountant (CA) Auditing.</p>
+            <button onclick="exportToCSV()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs px-4 py-2.5 rounded shadow uppercase tracking-wider">Export Audit CSV for CA</button>
           </div>
         </div>
       </section>
@@ -417,38 +526,80 @@
     </main>
   </section>
 
+  <!-- ========================================== -->
+  <!-- 4. CHANGE PASSWORD MODAL                   -->
+  <!-- ========================================== -->
+  <div id="modalChangePassword" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-lg p-5 max-w-sm w-full space-y-3 text-xs">
+      <h3 class="font-bold text-blue-950 text-base">Change Password</h3>
+      <form onsubmit="handlePasswordChange(event)" class="space-y-2">
+        <div>
+          <label class="font-bold">Current Password *</label>
+          <input type="password" id="pwdCurrent" required class="w-full p-2 border rounded mt-0.5">
+        </div>
+        <div>
+          <label class="font-bold">New Password *</label>
+          <input type="password" id="pwdNew" required class="w-full p-2 border rounded mt-0.5">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeChangePasswordModal()" class="px-3 py-1.5 bg-gray-200 rounded">Cancel</button>
+          <button type="submit" class="px-3 py-1.5 bg-blue-900 text-white font-bold rounded">Update Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 5. PRINTABLE A4 REPORT CONTAINER           -->
+  <!-- ========================================== -->
+  <div id="printableArea" class="hidden p-8 bg-white text-black font-serif">
+    <!-- Content injected dynamically during print execution -->
+  </div>
+
   <!-- JAVASCRIPT APPLICATION CONTROLLER -->
   <script>
-    // GLOBAL STATE & STORAGE PERSISTENCE
+    // GLOBAL DATA STORES
     let members = JSON.parse(localStorage.getItem('APP_MEMBERS')) || [];
     let loanApplications = JSON.parse(localStorage.getItem('APP_LOAN_APPS')) || [];
     let ledger = JSON.parse(localStorage.getItem('APP_LEDGER')) || [];
+    let masterLogs = JSON.parse(localStorage.getItem('APP_MASTER_LOGS')) || [];
     let currentUser = JSON.parse(localStorage.getItem('APP_SESSION')) || null;
+
+    // Default System Users
+    const DEFAULT_PRESIDENT = { mNo: 0, emId: 'PRESIDENT', name: 'Society President', password: 'pres123', role: 'PRESIDENT' };
+    const DEFAULT_ADMIN = { mNo: 0, emId: 'ADMIN', name: 'Society Administrator', password: 'admin123', role: 'ADMIN' };
 
     // INITIALIZATION
     document.addEventListener("DOMContentLoaded", () => {
       const today = new Date().toISOString().split('T')[0];
       if (document.getElementById('memAppDA')) document.getElementById('memAppDA').value = today;
-      if (document.getElementById('postingDate')) document.getElementById('postingDate').value = today;
+      if (document.getElementById('postDate')) document.getElementById('postDate').value = today;
       if (document.getElementById('divPostingDate')) document.getElementById('divPostingDate').value = today;
 
-      // Check existing session
       if (currentUser) {
         restoreUserSession();
       } else {
         showView('view-auth');
       }
       calculateMemEMIPreview();
+      updatePostShareAmt();
     });
 
     function saveData() {
       localStorage.setItem('APP_MEMBERS', JSON.stringify(members));
       localStorage.setItem('APP_LOAN_APPS', JSON.stringify(loanApplications));
       localStorage.setItem('APP_LEDGER', JSON.stringify(ledger));
+      localStorage.setItem('APP_MASTER_LOGS', JSON.stringify(masterLogs));
       localStorage.setItem('APP_SESSION', JSON.stringify(currentUser));
     }
 
-    // VIEW SWITCHING ENGINE (Auth vs Member Portal vs Admin Dashboard)
+    function logMasterDataChange(mNo, emId, name, desc) {
+      const entry = `[${new Date().toLocaleString()}] M.No: ${mNo} | Em.Id: ${emId} | Name: ${name} -> ${desc}`;
+      masterLogs.unshift(entry);
+      saveData();
+    }
+
+    // VIEW SWITCHER
     function showView(viewId) {
       document.getElementById('view-auth').classList.add('hidden');
       document.getElementById('view-member-portal').classList.add('hidden');
@@ -456,18 +607,17 @@
 
       document.getElementById(viewId).classList.remove('hidden');
 
-      // Update Session Banner Header
       const headerSession = document.getElementById('sessionUserInfo');
       if (currentUser) {
         headerSession.classList.remove('hidden');
         document.getElementById('sessionUserName').innerText = currentUser.name;
-        document.getElementById('sessionUserRole').innerText = currentUser.role === 'ADMIN' ? 'System Administrator' : `M.No: ${currentUser.mNo} (${currentUser.emId})`;
+        document.getElementById('sessionUserRole').innerText = currentUser.role === 'PRESIDENT' ? 'Society President' : (currentUser.role === 'ADMIN' ? 'Society Administrator' : `M.No: ${currentUser.mNo} (${currentUser.emId})`);
       } else {
         headerSession.classList.add('hidden');
       }
     }
 
-    // AUTH SWITCH TABS
+    // AUTH TAB SWITCHER
     function switchAuthTab(type) {
       if (type === 'login') {
         document.getElementById('auth-login-form').classList.remove('hidden');
@@ -488,71 +638,83 @@
       const emId = document.getElementById('loginEmId').value.trim();
       const password = document.getElementById('loginPassword').value.trim();
 
-      // 1. ADMIN LOGIN CHECK
-      if (emId.toUpperCase() === 'ADMIN' && password === 'admin123') {
-        currentUser = { name: 'System Administrator', role: 'ADMIN' };
+      // 1. PRESIDENT
+      if (emId.toUpperCase() === 'PRESIDENT' && password === (localStorage.getItem('PRESIDENT_PWD') || DEFAULT_PRESIDENT.password)) {
+        currentUser = { name: 'Society President', emId: 'PRESIDENT', role: 'PRESIDENT' };
         saveData();
         restoreUserSession();
         return;
       }
 
-      // 2. MEMBER LOGIN CHECK
+      // 2. ADMIN
+      if (emId.toUpperCase() === 'ADMIN' && password === (localStorage.getItem('ADMIN_PWD') || DEFAULT_ADMIN.password)) {
+        currentUser = { name: 'Society Administrator', emId: 'ADMIN', role: 'ADMIN' };
+        saveData();
+        restoreUserSession();
+        return;
+      }
+
+      // 3. MEMBER
       const member = members.find(m => m.emId.toLowerCase() === emId.toLowerCase() && m.password === password);
       if (member) {
         currentUser = { mNo: member.mNo, emId: member.emId, name: member.name, role: 'MEMBER' };
         saveData();
         restoreUserSession();
       } else {
-        alert("Invalid Employee ID or Password!");
+        alert("Invalid User ID or Password!");
       }
     }
 
-    // REGISTER NEW MEMBER ACCOUNT CONTROLLER
+    // REGISTER CONTROLLER
     function handleRegister(e) {
       e.preventDefault();
       const mNo = parseInt(document.getElementById('regMNo').value);
       const emId = document.getElementById('regEmId').value.trim();
 
       if (members.some(m => m.mNo === mNo || m.emId.toLowerCase() === emId.toLowerCase())) {
-        alert("Member with this Membership No or Employee ID already exists!");
+        alert("Member with this M.NO. or EM.ID. already exists!");
         return;
       }
+
+      const sharesQty = parseInt(document.getElementById('regOpShares').value);
+      const thrift = parseFloat(document.getElementById('regOpThrift').value);
 
       const newMember = {
         mNo: mNo,
         emId: emId,
         name: document.getElementById('regName').value.trim(),
-        sharesQty: parseInt(document.getElementById('regOpShares').value),
-        sharesDate: new Date().toISOString().split('T')[0],
-        thrift: parseFloat(document.getElementById('regOpThrift').value),
-        thriftDate: new Date().toISOString().split('T')[0],
+        sharesQty: sharesQty,
+        thrift: thrift,
         bankName: document.getElementById('regBank').value.trim() || 'N/A',
         acNo: document.getElementById('regAcNo').value.trim() || 'N/A',
+        ifsc: document.getElementById('regIfsc').value.trim() || 'N/A',
         password: document.getElementById('regPassword').value.trim()
       };
 
       members.push(newMember);
 
-      // Add Opening Entry to Ledger
+      // Ledger Opening Entry
+      const shareAmt = sharesQty * 100;
       ledger.unshift({
-        date: newMember.sharesDate,
+        date: new Date().toISOString().split('T')[0],
         mNo: newMember.mNo,
+        emId: newMember.emId,
+        name: newMember.name,
         desc: "Opening Account Shares & Thrift Balance",
         debit: 0,
-        credit: (newMember.sharesQty * 10) + newMember.thrift
+        credit: shareAmt + thrift
       });
 
-      saveData();
-      alert("Account created successfully! Logging you in...");
+      logMasterDataChange(newMember.mNo, newMember.emId, newMember.name, `Account Created: Shares=${sharesQty} (₹${shareAmt}), Thrift=₹${thrift}`);
 
       currentUser = { mNo: newMember.mNo, emId: newMember.emId, name: newMember.name, role: 'MEMBER' };
       saveData();
       restoreUserSession();
+      alert("Registration successful!");
     }
 
-    // RESTORE SESSION AFTER LOGIN / PAGE REFRESH
     function restoreUserSession() {
-      if (currentUser.role === 'ADMIN') {
+      if (currentUser.role === 'ADMIN' || currentUser.role === 'PRESIDENT') {
         showView('view-admin-dashboard');
         renderAdminDashboard();
       } else {
@@ -561,119 +723,228 @@
       }
     }
 
-    // LOGOUT
     function logout() {
       currentUser = null;
       localStorage.removeItem('APP_SESSION');
       showView('view-auth');
     }
 
+    // PASSWORD MANAGEMENT
+    function openChangePasswordModal() {
+      document.getElementById('modalChangePassword').classList.remove('hidden');
+    }
+    function closeChangePasswordModal() {
+      document.getElementById('modalChangePassword').classList.add('hidden');
+    }
+    function handlePasswordChange(e) {
+      e.preventDefault();
+      const curr = document.getElementById('pwdCurrent').value;
+      const next = document.getElementById('pwdNew').value;
+
+      if (currentUser.role === 'PRESIDENT') {
+        if (curr !== (localStorage.getItem('PRESIDENT_PWD') || 'pres123')) { alert("Current Password incorrect!"); return; }
+        localStorage.setItem('PRESIDENT_PWD', next);
+      } else if (currentUser.role === 'ADMIN') {
+        if (curr !== (localStorage.getItem('ADMIN_PWD') || 'admin123')) { alert("Current Password incorrect!"); return; }
+        localStorage.setItem('ADMIN_PWD', next);
+      } else {
+        const m = members.find(x => x.mNo === currentUser.mNo);
+        if (!m || m.password !== curr) { alert("Current Password incorrect!"); return; }
+        m.password = next;
+        saveData();
+      }
+      closeChangePasswordModal();
+      alert("Password updated successfully!");
+    }
+
+    function adminResetPassword(mNo) {
+      const m = members.find(x => x.mNo === mNo);
+      if (!m) return;
+      const newPwd = prompt(`Enter new password for Member M.NO: ${m.mNo} (${m.name}):`);
+      if (newPwd) {
+        m.password = newPwd.trim();
+        saveData();
+        logMasterDataChange(m.mNo, m.emId, m.name, "Password Reset by Admin/President");
+        alert("Password updated successfully!");
+      }
+    }
+
     // ==========================================
-    // MEMBER PORTAL FUNCTIONS
+    // MEMBER PORTAL CONTROLLERS
     // ==========================================
     function renderMemberPortal() {
       const member = members.find(m => m.mNo === currentUser.mNo);
       if (!member) return;
 
+      const shareAmt = member.sharesQty * 100;
+      const grandTotal = shareAmt + member.thrift;
+
       document.getElementById('memPortalWelcome').innerText = `Welcome, ${member.name}`;
-      document.getElementById('memPortalDetails').innerText = `M.No: ${member.mNo} | Em.Id: ${member.emId} | Bank: ${member.bankName} (${member.acNo})`;
-      document.getElementById('memPortalSharesVal').innerText = `₹ ${(member.sharesQty * 10).toLocaleString()} (${member.sharesQty} Qty)`;
+      document.getElementById('memPortalDetails').innerText = `M.NO: ${member.mNo} | EM.ID: ${member.emId} | Bank: ${member.bankName} (${member.acNo} - ${member.ifsc})`;
+      document.getElementById('memPortalSharesVal').innerText = `₹ ${shareAmt.toLocaleString()} (${member.sharesQty} Shares)`;
       document.getElementById('memPortalThriftVal').innerText = `₹ ${member.thrift.toLocaleString()}`;
+      document.getElementById('memPortalGrandTotalVal').innerText = `₹ ${grandTotal.toLocaleString()}`;
 
       renderMemberLoans();
       renderMemberLedger();
     }
 
     function calculateEMI(principal, roi, tenureMonths) {
+      if (!principal || !roi || !tenureMonths || tenureMonths <= 0) return 0;
       const monthlyRate = (roi / 12) / 100;
       const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) / (Math.pow(1 + monthlyRate, tenureMonths) - 1);
-      return Math.round(emi);
+      return Math.round(emi) || 0;
     }
 
     function calculateMemEMIPreview() {
-      const la = parseFloat(document.getElementById('memAppLA').value);
-      const tenure = parseInt(document.getElementById('memAppTenure').value);
+      const la = parseFloat(document.getElementById('memAppLA').value) || 0;
+      const tenure = parseInt(document.getElementById('memAppTenure').value) || 0;
       const emi = calculateEMI(la, 9.5, tenure);
       document.getElementById('memEmiPreview').innerText = `₹ ${emi.toLocaleString()} / month`;
     }
 
-    // SUBMIT LOAN APPLICATION & UPLOAD PDF
     function submitMemberLoanApplication(e) {
       e.preventDefault();
+      const appId = document.getElementById('editingAppId').value;
       const da = document.getElementById('memAppDA').value;
+      const purpose = document.getElementById('memAppPurpose').value;
+      const priority = document.getElementById('memAppPriority').value;
       const la = parseFloat(document.getElementById('memAppLA').value);
       const tenure = parseInt(document.getElementById('memAppTenure').value);
       const fileInput = document.getElementById('memAppPdf');
+      const member = members.find(m => m.mNo === currentUser.mNo);
 
+      // EDIT EXISTING
+      if (appId) {
+        const app = loanApplications.find(a => a.appId === appId);
+        if (app && app.status === 'APPLIED') {
+          app.da = da;
+          app.purpose = purpose;
+          app.priority = priority;
+          app.la = la;
+          app.tenure = tenure;
+          app.emi = calculateEMI(la, 9.5, tenure);
+
+          if (fileInput.files && fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+              app.pdfFileName = file.name;
+              app.pdfDataUrl = evt.target.result;
+              saveData();
+              finishLoanSubmit();
+            };
+            reader.readAsDataURL(file);
+            return;
+          } else {
+            saveData();
+            finishLoanSubmit();
+            return;
+          }
+        }
+      }
+
+      // NEW APPLICATION
       if (!fileInput.files || fileInput.files.length === 0) {
-        alert("Please select a PDF document file to upload!");
+        alert("Please upload a PDF document file!");
         return;
       }
 
       const file = fileInput.files[0];
-      if (file.type !== 'application/pdf') {
-        alert("Only PDF files are permitted!");
-        return;
-      }
-
-      // Convert PDF File to Base64 Data URL for Browser Local Storage Remote Persistence
       const reader = new FileReader();
       reader.onload = function(evt) {
-        const pdfDataUrl = evt.target.result;
-        const member = members.find(m => m.mNo === currentUser.mNo);
-        const emi = calculateEMI(la, 9.5, tenure);
-
         const newLoanApp = {
           appId: 'APP-' + Math.floor(1000 + Math.random() * 9000),
           da: da,
           mNo: member.mNo,
+          emId: member.emId,
           name: member.name,
-          emNo: member.emId,
           la: la,
-          roi: 9.5,
           tenure: tenure,
-          emi: emi,
+          purpose: purpose,
+          priority: priority,
+          emi: calculateEMI(la, 9.5, tenure),
           pdfFileName: file.name,
-          pdfDataUrl: pdfDataUrl,
+          pdfDataUrl: evt.target.result,
           status: 'APPLIED',
           remainingPrincipal: la
         };
 
         loanApplications.push(newLoanApp);
         saveData();
-        renderMemberPortal();
-        document.getElementById('memLoanApplyForm').reset();
-        calculateMemEMIPreview();
-        alert("Loan Application and PDF Document uploaded successfully!");
+        finishLoanSubmit();
       };
-
       reader.readAsDataURL(file);
+    }
+
+    function finishLoanSubmit() {
+      cancelEditLoan();
+      renderMemberPortal();
+      alert("Loan Application saved successfully!");
+    }
+
+    function editLoanApp(appId) {
+      const app = loanApplications.find(a => a.appId === appId);
+      if (!app || app.status !== 'APPLIED') return;
+
+      document.getElementById('editingAppId').value = app.appId;
+      document.getElementById('memAppDA').value = app.da;
+      document.getElementById('memAppPurpose').value = app.purpose;
+      document.getElementById('memAppPriority').value = app.priority;
+      document.getElementById('memAppLA').value = app.la;
+      document.getElementById('memAppTenure').value = app.tenure;
+
+      document.getElementById('loanFormTitle').innerText = "Edit Loan Application";
+      document.getElementById('btnSubmitLoan').innerText = "Update Loan Application";
+      document.getElementById('btnCancelEditLoan').classList.remove('hidden');
+      calculateMemEMIPreview();
+    }
+
+    function cancelEditLoan() {
+      document.getElementById('editingAppId').value = "";
+      document.getElementById('memLoanApplyForm').reset();
+      document.getElementById('loanFormTitle').innerText = "Apply for Member Loan";
+      document.getElementById('btnSubmitLoan').innerText = "Submit Loan Application";
+      document.getElementById('btnCancelEditLoan').classList.add('hidden');
+      calculateMemEMIPreview();
+    }
+
+    function deleteLoanApp(appId) {
+      if (confirm("Are you sure you want to delete this Loan Application?")) {
+        loanApplications = loanApplications.filter(a => a.appId !== appId);
+        saveData();
+        renderMemberPortal();
+      }
     }
 
     function renderMemberLoans() {
       const tbody = document.getElementById('memMyLoansTable');
       tbody.innerHTML = '';
-
       const myLoans = loanApplications.filter(l => l.mNo === currentUser.mNo);
 
       if (myLoans.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400">No loan applications submitted yet.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400">No loan applications found.</td></tr>`;
         return;
       }
 
       myLoans.forEach(l => {
-        const badgeColor = l.status === 'SANCTIONED' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800';
+        const badge = l.status === 'SANCTIONED' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800';
         tbody.innerHTML += `
           <tr class="border-b hover:bg-slate-50">
-            <td class="p-2">${l.da}</td>
-            <td class="p-2 font-bold text-blue-900">₹ ${l.la.toLocaleString()}</td>
-            <td class="p-2">${l.tenure} Mos</td>
-            <td class="p-2 font-bold text-emerald-800">₹ ${l.emi.toLocaleString()}</td>
-            <td class="p-2">
-              <a href="${l.pdfDataUrl}" download="${l.pdfFileName}" class="text-blue-600 hover:underline font-semibold text-[11px]">📄 ${l.pdfFileName}</a>
+            <td class="p-2 border">${l.da}</td>
+            <td class="p-2 border font-bold text-blue-900">₹ ${l.la.toLocaleString()}</td>
+            <td class="p-2 border text-[11px]">${l.purpose} <span class="font-bold">(${l.priority})</span></td>
+            <td class="p-2 border">${l.tenure} Months (₹${l.emi}/mo)</td>
+            <td class="p-2 border">
+              <a href="${l.pdfDataUrl}" download="${l.pdfFileName}" class="text-blue-600 hover:underline font-bold text-[11px]">📄 Download PDF</a>
             </td>
-            <td class="p-2"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${badgeColor}">${l.status}</span></td>
-            <td class="p-2 font-bold text-amber-900">₹ ${l.remainingPrincipal.toLocaleString()}</td>
+            <td class="p-2 border"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${badge}">${l.status}</span></td>
+            <td class="p-2 border">
+              ${l.status === 'APPLIED' ? `
+                <button onclick="editLoanApp('${l.appId}')" class="bg-blue-600 text-white px-2 py-0.5 rounded text-[10px] mr-1">Edit</button>
+                <button onclick="deleteLoanApp('${l.appId}')" class="bg-red-600 text-white px-2 py-0.5 rounded text-[10px]">Delete</button>
+              ` : '-'}
+            </td>
           </tr>
         `;
       });
@@ -682,7 +953,6 @@
     function renderMemberLedger() {
       const tbody = document.getElementById('memMyLedgerTable');
       tbody.innerHTML = '';
-
       const myLedger = ledger.filter(l => l.mNo === currentUser.mNo);
 
       if (myLedger.length === 0) {
@@ -703,7 +973,7 @@
     }
 
     // ==========================================
-    // ADMIN DASHBOARD FUNCTIONS
+    // ADMIN & PRESIDENT DASHBOARD CONTROLLERS
     // ==========================================
     function switchAdminTab(tabId) {
       document.querySelectorAll('.adm-tab-page').forEach(page => page.classList.add('hidden'));
@@ -719,101 +989,137 @@
         'tab-admin-applications': 'btn-adm-applications',
         'tab-admin-sanctioned': 'btn-adm-sanctioned',
         'tab-admin-ledger': 'btn-adm-ledger',
+        'tab-admin-misc': 'btn-adm-misc',
         'tab-admin-dividend': 'btn-adm-dividend'
       };
       const activeBtn = document.getElementById(btnMap[tabId]);
-      activeBtn.classList.add('bg-blue-950', 'border-b-4', 'border-yellow-400');
+      if (activeBtn) activeBtn.classList.add('bg-blue-950', 'border-b-4', 'border-yellow-400');
     }
 
     function renderAdminDashboard() {
-      // 1. Members Table
+      const isPresident = currentUser.role === 'PRESIDENT';
+
+      // 1. MENU 1: MEMBERS MASTER TABLE
       const memTable = document.getElementById('adminMembersTable');
       memTable.innerHTML = '';
       document.getElementById('totalMembersBadge').innerText = `Members: ${members.length}`;
+
+      const postEmSelect = document.getElementById('postEmId');
+      if (postEmSelect) postEmSelect.innerHTML = '';
+
       members.forEach(m => {
+        const shareAmt = m.sharesQty * 100;
+        const grandTotal = shareAmt + m.thrift;
+
         memTable.innerHTML += `
           <tr class="border-b hover:bg-slate-50">
-            <td class="p-2 font-bold text-blue-900">${m.mNo}</td>
-            <td class="p-2">${m.emId}</td>
-            <td class="p-2 font-semibold">${m.name}</td>
-            <td class="p-2">${m.sharesQty} Shares (₹ ${(m.sharesQty * 10).toLocaleString()})</td>
-            <td class="p-2 font-bold text-emerald-800">₹ ${m.thrift.toLocaleString()}</td>
-            <td class="p-2 text-gray-500">${m.bankName} - ${m.acNo}</td>
+            <td class="p-2 border font-bold text-blue-900">${m.mNo}</td>
+            <td class="p-2 border font-semibold">${m.emId}</td>
+            <td class="p-2 border">${m.name}</td>
+            <td class="p-2 border text-center">${m.sharesQty}</td>
+            <td class="p-2 border font-semibold">₹ ${shareAmt.toLocaleString()}</td>
+            <td class="p-2 border font-bold text-emerald-800">₹ ${m.thrift.toLocaleString()}</td>
+            <td class="p-2 border font-extrabold text-blue-950 bg-blue-50">₹ ${grandTotal.toLocaleString()}</td>
+            <td class="p-2 border text-gray-600 text-[11px]">${m.bankName} | ${m.acNo} | ${m.ifsc}</td>
+            <td class="p-2 border text-center">
+              <button onclick="adminResetPassword(${m.mNo})" class="bg-amber-600 text-white text-[10px] px-2 py-1 rounded">Reset Password</button>
+            </td>
           </tr>
         `;
+
+        if (postEmSelect) {
+          postEmSelect.innerHTML += `<option value="${m.emId}">${m.emId} - ${m.name}</option>`;
+        }
       });
 
-      // 2. Pending Loan Applications Table with PDF Download
+      // 2. MENU 3: LIST OF LOAN APPLICANTS TABLE
       const appTable = document.getElementById('adminLoanAppsTable');
       appTable.innerHTML = '';
       const pendingApps = loanApplications.filter(a => a.status === 'APPLIED');
       if (pendingApps.length === 0) {
-        appTable.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400">No pending loan applications.</td></tr>`;
+        appTable.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-gray-400">No pending loan applications.</td></tr>`;
       } else {
         pendingApps.forEach(a => {
           appTable.innerHTML += `
             <tr class="border-b hover:bg-slate-50">
-              <td class="p-2">${a.da}</td>
-              <td class="p-2 font-bold text-blue-900">${a.mNo}</td>
-              <td class="p-2 font-semibold">${a.name}</td>
-              <td class="p-2">${a.emNo}</td>
-              <td class="p-2 font-bold text-amber-900">₹ ${a.la.toLocaleString()} (${a.tenure} Mos)</td>
-              <td class="p-2">
-                ${a.pdfDataUrl ? `<a href="${a.pdfDataUrl}" download="${a.pdfFileName}" class="bg-blue-100 hover:bg-blue-200 text-blue-900 px-2 py-1 rounded text-[11px] font-bold">⬇ View PDF (${a.pdfFileName})</a>` : 'No PDF Uploaded'}
+              <td class="p-2 border">${a.da}</td>
+              <td class="p-2 border font-bold text-blue-900">${a.mNo}</td>
+              <td class="p-2 border">${a.emId}</td>
+              <td class="p-2 border font-semibold">${a.name}</td>
+              <td class="p-2 border font-bold text-amber-900">₹ ${a.la.toLocaleString()}</td>
+              <td class="p-2 border text-center">${a.tenure}</td>
+              <td class="p-2 border">${a.purpose}</td>
+              <td class="p-2 border text-center">
+                <a href="${a.pdfDataUrl}" download="${a.pdfFileName}" class="bg-blue-100 text-blue-900 px-2 py-1 rounded text-[10px] font-bold inline-block">⬇ PDF Document</a>
               </td>
-              <td class="p-2 text-center">
-                <button onclick="sanctionLoan('${a.appId}')" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs px-2.5 py-1 rounded shadow">Sanction & Release</button>
+              <td class="p-2 border text-center font-bold ${a.priority === 'Priority' ? 'text-red-600' : 'text-gray-600'}">${a.priority}</td>
+              <td class="p-2 border text-center">
+                <button onclick="sanctionLoan('${a.appId}')" class="bg-emerald-700 text-white font-bold text-xs px-2.5 py-1 rounded shadow">SANCTION</button>
               </td>
             </tr>
           `;
         });
       }
 
-      // 3. Sanctioned List Table
+      // 3. MENU 4: SANCTIONED LIST & EMIs TABLE
       const sancTable = document.getElementById('adminSanctionedTable');
       sancTable.innerHTML = '';
       const sanctioned = loanApplications.filter(a => a.status === 'SANCTIONED');
       if (sanctioned.length === 0) {
-        sancTable.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-400">No sanctioned loans released yet.</td></tr>`;
+        sancTable.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-gray-400">No sanctioned loans.</td></tr>`;
       } else {
         sanctioned.forEach(s => {
+          const m = members.find(x => x.mNo === s.mNo) || {};
           sancTable.innerHTML += `
             <tr class="border-b hover:bg-slate-50">
               <td class="p-2 border">${s.da}</td>
               <td class="p-2 border font-bold text-blue-900">${s.mNo}</td>
-              <td class="p-2 border font-semibold">${s.name}</td>
-              <td class="p-2 border">${s.emNo}</td>
+              <td class="p-2 border font-semibold">${s.emId} - ${s.name}</td>
               <td class="p-2 border font-bold text-blue-950">₹ ${s.la.toLocaleString()}</td>
-              <td class="p-2 border">${s.bankName || 'SBI'} (${s.acNo || 'N/A'})</td>
+              <td class="p-2 border">${m.bankName || 'N/A'}</td>
+              <td class="p-2 border">${m.acNo || 'N/A'}</td>
+              <td class="p-2 border">${m.ifsc || 'N/A'}</td>
               <td class="p-2 border font-bold text-emerald-800">₹ ${s.emi.toLocaleString()}</td>
               <td class="p-2 border font-bold text-amber-900">₹ ${s.remainingPrincipal.toLocaleString()}</td>
               <td class="p-2 border">
-                ${s.remainingPrincipal > 0 ? `<button onclick="adminRecoverEMI('${s.appId}')" class="bg-blue-800 text-white text-xs px-2 py-0.5 rounded">Recover EMI</button>` : `<span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">PAID</span>`}
+                ${s.remainingPrincipal > 0 ? `<button onclick="adminRecoverEMI('${s.appId}')" class="bg-blue-800 text-white text-[10px] px-2 py-0.5 rounded">Recover EMI</button>` : `<span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">CLEARED</span>`}
               </td>
             </tr>
           `;
         });
       }
 
-      // 4. Ledger Table
+      // 4. MENU 5: MEMBER LEDGER TABLE
       const ledTable = document.getElementById('adminLedgerTable');
       ledTable.innerHTML = '';
-      ledger.forEach(l => {
-        const member = members.find(m => m.mNo === l.mNo);
+      ledger.forEach((l, index) => {
         ledTable.innerHTML += `
           <tr class="border-b hover:bg-slate-50">
             <td class="p-2 border">${l.date}</td>
             <td class="p-2 border font-bold text-blue-900">${l.mNo}</td>
-            <td class="p-2 border font-semibold">${member ? member.name : 'N/A'}</td>
+            <td class="p-2 border font-semibold">${l.emId ? l.emId + ' - ' : ''}${l.name || 'N/A'}</td>
             <td class="p-2 border">${l.desc}</td>
             <td class="p-2 border text-amber-900 font-semibold">${l.debit ? '₹ ' + l.debit.toLocaleString() : '-'}</td>
             <td class="p-2 border text-emerald-800 font-semibold">${l.credit ? '₹ ' + l.credit.toLocaleString() : '-'}</td>
+            <td class="p-2 border text-center">
+              ${isPresident ? `<button onclick="deleteLedgerEntry(${index})" class="bg-red-600 text-white px-2 py-0.5 rounded text-[10px]">Delete</button>` : `<span class="text-gray-400 text-[10px]">President Only</span>`}
+            </td>
           </tr>
         `;
       });
+
+      // 5. MASTER DATA LOG FILE VIEW (President Only)
+      const logContainer = document.getElementById('masterDataLogFileView');
+      if (logContainer) {
+        logContainer.innerHTML = masterLogs.length > 0 ? masterLogs.join('<br>') : '<span class="text-gray-400">No log changes recorded yet.</span>';
+      }
     }
 
-    // SANCTION LOAN ACTION
+    function updatePostShareAmt() {
+      const qty = parseInt(document.getElementById('postSharesQty').value) || 0;
+      document.getElementById('postShareAmt').value = qty * 100;
+    }
+
     function sanctionLoan(appId) {
       const app = loanApplications.find(a => a.appId === appId);
       if (app) {
@@ -821,13 +1127,15 @@
         ledger.unshift({
           date: new Date().toISOString().split('T')[0],
           mNo: app.mNo,
-          desc: `Loan Amount Released (Sanctioned List) - Rs. ${app.la.toLocaleString()}`,
+          emId: app.emId,
+          name: app.name,
+          desc: `Loan Sanctioned & Disbursed - Rs. ${app.la.toLocaleString()}`,
           debit: app.la,
           credit: 0
         });
         saveData();
         renderAdminDashboard();
-        alert(`Loan released to Sanctioned List for ${app.name}!`);
+        alert(`Loan sanctioned for ${app.name}!`);
       }
     }
 
@@ -835,16 +1143,18 @@
       const loan = loanApplications.find(a => a.appId === appId);
       if (loan && loan.remainingPrincipal > 0) {
         const today = new Date().toISOString().split('T')[0];
-        const monthlyRate = (loan.roi / 12) / 100;
-        const interestComponent = Math.round(loan.remainingPrincipal * monthlyRate);
-        const principalComponent = loan.emi - interestComponent;
+        const monthlyRate = (9.5 / 12) / 100;
+        const interest = Math.round(loan.remainingPrincipal * monthlyRate);
+        const principal = loan.emi - interest;
 
-        loan.remainingPrincipal = Math.max(0, loan.remainingPrincipal - principalComponent);
+        loan.remainingPrincipal = Math.max(0, loan.remainingPrincipal - principal);
 
         ledger.unshift({
           date: today,
           mNo: loan.mNo,
-          desc: `Loan EMI Recovery - Principal: ₹${principalComponent}, Interest: ₹${interestComponent}`,
+          emId: loan.emId,
+          name: loan.name,
+          desc: `Loan EMI Recovery - Principal: ₹${principal}, Interest: ₹${interest}`,
           debit: loan.emi,
           credit: 0
         });
@@ -854,43 +1164,221 @@
       }
     }
 
-    // BULK MONTHLY POSTING ACTION
-    function processMonthlyPosting(e) {
+    function processPosting(e) {
       e.preventDefault();
-      const pDate = document.getElementById('postingDate').value;
-      const addThrift = parseFloat(document.getElementById('monthlyThrift').value) || 0;
-      const addShareQty = parseInt(document.getElementById('monthlyShareQty').value) || 0;
+      const pDate = document.getElementById('postDate').value;
+      const emId = document.getElementById('postEmId').value;
+      const sharesQty = parseInt(document.getElementById('postSharesQty').value) || 0;
+      const shareAmt = sharesQty * 100;
+      const thriftAmt = parseFloat(document.getElementById('postThriftAmt').value) || 0;
+      const emiAmt = parseFloat(document.getElementById('postEmiAmt').value) || 0;
+
+      const member = members.find(m => m.emId === emId);
+      if (!member) return;
+
+      member.sharesQty += sharesQty;
+      member.thrift += thriftAmt;
+
+      ledger.unshift({
+        date: pDate,
+        mNo: member.mNo,
+        emId: member.emId,
+        name: member.name,
+        desc: `Monthly Posting - Shares Qty (+${sharesQty}): ₹${shareAmt}, Thrift: ₹${thriftAmt}`,
+        debit: emiAmt,
+        credit: thriftAmt + shareAmt
+      });
+
+      logMasterDataChange(member.mNo, member.emId, member.name, `Posting Added: Shares +${sharesQty}, Thrift +₹${thriftAmt}`);
+
+      saveData();
+      renderAdminDashboard();
+      alert(`Posting executed for ${member.name}`);
+    }
+
+    function handleMiscLedgerEntry(e) {
+      e.preventDefault();
+      const mNo = parseInt(document.getElementById('miscMNo').value);
+      const desc = document.getElementById('miscDesc').value.trim();
+      const debit = parseFloat(document.getElementById('miscDebit').value) || 0;
+      const credit = parseFloat(document.getElementById('miscCredit').value) || 0;
+
+      const member = members.find(m => m.mNo === mNo);
+      if (!member) { alert("Member M.NO. not found!"); return; }
+
+      ledger.unshift({
+        date: new Date().toISOString().split('T')[0],
+        mNo: member.mNo,
+        emId: member.emId,
+        name: member.name,
+        desc: `[MISC ADJUSTMENT] ${desc}`,
+        debit: debit,
+        credit: credit
+      });
+
+      saveData();
+      renderAdminDashboard();
+      alert("Miscellaneous ledger entry added!");
+    }
+
+    function deleteLedgerEntry(index) {
+      if (currentUser.role !== 'PRESIDENT') {
+        alert("Only the President is authorized to edit or delete previously posted ledger entries!");
+        return;
+      }
+      if (confirm("Are you sure you want to delete this ledger entry?")) {
+        ledger.splice(index, 1);
+        saveData();
+        renderAdminDashboard();
+      }
+    }
+
+    function processDividendPosting(e) {
+      e.preventDefault();
+      const pDate = document.getElementById('divPostingDate').value;
+      const shareRate = parseFloat(document.getElementById('shareDivRate').value) || 0;
+      const thriftRate = parseFloat(document.getElementById('thriftDivRate').value) || 0;
 
       members.forEach(m => {
-        m.thrift += addThrift;
-        m.sharesQty += addShareQty;
+        const shareCap = m.sharesQty * 100;
+        const shareDivAmt = Math.round(shareCap * (shareRate / 100));
+        const thriftDivAmt = Math.round(m.thrift * (thriftRate / 100));
+        const totalDiv = shareDivAmt + thriftDivAmt;
+
+        m.thrift += totalDiv;
 
         ledger.unshift({
           date: pDate,
           mNo: m.mNo,
-          desc: `Monthly Posting - Thrift: ₹${addThrift}, Shares: ${addShareQty} Qty`,
+          emId: m.emId,
+          name: m.name,
+          desc: `Annual Dividend - Share Div (${shareRate}%): ₹${shareDivAmt}, Thrift Div (${thriftRate}%): ₹${thriftDivAmt}`,
           debit: 0,
-          credit: addThrift + (addShareQty * 10)
+          credit: totalDiv
         });
       });
 
       saveData();
       renderAdminDashboard();
-      alert("Bulk Monthly Postings successfully processed!");
+      alert("Annual Dividend posted to ledger and credited to member thrift balances!");
     }
 
-    // EXPORT TO CSV FOR CA AUDIT
-    function exportToCSV() {
-      let csv = "AP PCO CO-OPERATIVE CREDIT SOCIETY - Balance Sheet & Member Audit Ledger\n";
-      csv += "M.No.,Employee ID,Member Name,Shares Qty,Share Capital (INR),Thrift Balance (INR)\n";
+    // PRINT REPORT GENERATOR
+    function preparePrintableSanctionedList() {
+      const area = document.getElementById('printableArea');
+      let html = `
+        <div class="text-center mb-6">
+          <h1 class="text-2xl font-bold uppercase">AP PCO CO-OPERATIVE CREDIT SOCIETY</h1>
+          <p class="text-sm">Registered under MAC Societies Act 1969 | Regd. No. 99999/1977</p>
+          <h2 class="text-lg font-bold underline mt-3">LOAN SANCTIONS REPORT (A4 FORMAT)</h2>
+        </div>
+        <table class="w-full text-xs border-collapse border border-black">
+          <thead>
+            <tr class="bg-gray-200 uppercase border border-black">
+              <th class="p-2 border border-black">DATE</th>
+              <th class="p-2 border border-black">M.NO.</th>
+              <th class="p-2 border border-black">EM.ID. - NAME</th>
+              <th class="p-2 border border-black">LOAN AMOUNT</th>
+              <th class="p-2 border border-black">MONTHLY EMI</th>
+              <th class="p-2 border border-black">OUTSTANDING PRINCIPLE</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      const sanctioned = loanApplications.filter(a => a.status === 'SANCTIONED');
+      sanctioned.forEach(s => {
+        html += `
+          <tr>
+            <td class="p-2 border border-black text-center">${s.da}</td>
+            <td class="p-2 border border-black text-center font-bold">${s.mNo}</td>
+            <td class="p-2 border border-black">${s.emId} - ${s.name}</td>
+            <td class="p-2 border border-black font-bold">₹ ${s.la.toLocaleString()}</td>
+            <td class="p-2 border border-black">₹ ${s.emi.toLocaleString()}</td>
+            <td class="p-2 border border-black font-bold">₹ ${s.remainingPrincipal.toLocaleString()}</td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table>
+        <div class="mt-12 flex justify-between text-xs font-bold">
+          <div>Prepared By: Society Administrator</div>
+          <div>Authorized By: Society President</div>
+        </div>
+      `;
+
+      area.innerHTML = html;
+      area.classList.remove('hidden');
+      window.print();
+      area.classList.add('hidden');
+    }
+
+    function preparePrintableMasterList() {
+      const area = document.getElementById('printableArea');
+      let html = `
+        <div class="text-center mb-6">
+          <h1 class="text-2xl font-bold uppercase">AP PCO CO-OPERATIVE CREDIT SOCIETY</h1>
+          <p class="text-sm">Registered under MAC Societies Act 1969 | Regd. No. 99999/1977</p>
+          <h2 class="text-lg font-bold underline mt-3">MEMBERS MASTER DATA & GRAND TOTALS REPORT</h2>
+        </div>
+        <table class="w-full text-xs border-collapse border border-black">
+          <thead>
+            <tr class="bg-gray-200 uppercase border border-black">
+              <th class="p-2 border border-black">M.NO.</th>
+              <th class="p-2 border border-black">EM.ID.</th>
+              <th class="p-2 border border-black">NAME</th>
+              <th class="p-2 border border-black">S.QTY</th>
+              <th class="p-2 border border-black">SHARE AMOUNT (₹100/sh)</th>
+              <th class="p-2 border border-black">THRIFT SAVING</th>
+              <th class="p-2 border border-black font-bold">GRAND TOTAL AMOUNT</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
       members.forEach(m => {
-        csv += `${m.mNo},${m.emId},"${m.name}",${m.sharesQty},${m.sharesQty * 10},${m.thrift}\n`;
+        const shareAmt = m.sharesQty * 100;
+        const grandTotal = shareAmt + m.thrift;
+        html += `
+          <tr>
+            <td class="p-2 border border-black text-center font-bold">${m.mNo}</td>
+            <td class="p-2 border border-black text-center">${m.emId}</td>
+            <td class="p-2 border border-black">${m.name}</td>
+            <td class="p-2 border border-black text-center">${m.sharesQty}</td>
+            <td class="p-2 border border-black font-bold">₹ ${shareAmt.toLocaleString()}</td>
+            <td class="p-2 border border-black font-bold">₹ ${m.thrift.toLocaleString()}</td>
+            <td class="p-2 border border-black font-extrabold bg-gray-100">₹ ${grandTotal.toLocaleString()}</td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table>
+        <div class="mt-12 flex justify-between text-xs font-bold">
+          <div>Prepared By: Society Administrator</div>
+          <div>Approved By: Society President</div>
+        </div>
+      `;
+
+      area.innerHTML = html;
+      area.classList.remove('hidden');
+      window.print();
+      area.classList.add('hidden');
+    }
+
+    // EXPORT CA AUDIT CSV
+    function exportToCSV() {
+      let csv = "AP PCO CO-OPERATIVE CREDIT SOCIETY - CA AUDIT EXPORT\n";
+      csv += "M.NO.,EM.ID.,NAME,SHARES QTY,SHARE AMOUNT (₹100/sh),THRIFT SAVING,GRAND TOTAL AMOUNT,BANK NAME,AC.NO.,IFSCode\n";
+      members.forEach(m => {
+        const shareAmt = m.sharesQty * 100;
+        const grandTotal = shareAmt + m.thrift;
+        csv += `${m.mNo},${m.emId},"${m.name}",${m.sharesQty},${shareAmt},${m.thrift},${grandTotal},"${m.bankName}","${m.acNo}","${m.ifsc}"\n`;
       });
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.setAttribute('href', url);
-      a.setAttribute('download', 'AP_PCO_CoOp_Audit_Report.csv');
+      a.setAttribute('download', 'AP_PCO_CoOp_CA_Audit_Export.csv');
       a.click();
     }
   </script>
